@@ -1,13 +1,30 @@
-export default function updateStudentGradeByCity(studentObjects, city, newGrades) {
-  if (!Array.isArray(studentObjects) || !Array.isArray(newGrades)) {
-    return [];
-  }
+/**
+ * Updates the grades of a list of students in a given city.
+ * @param {{
+ *   id: Number,
+ *   firstName: String,
+ *   location: String
+ * }[]} students - The list of students.
+ * @param {*} city - The city of students.
+ * @param {{
+ *   studentId: Number,
+ *   grade: Number,
+ */
 
-  return studentObjects.filter((student) => student.location === city)
-    .map((student) => {
-      const studentCopy = { ...student };
-      const studentGradeObj = newGrades.find((gradeObj) => gradeObj.studentId === studentCopy.id);
-      studentCopy.grade = studentGradeObj ? studentGradeObj.grade : 'N/A';
-      return studentCopy;
-    });
+export default function updateStudentGradeByCity(students, city, newGrades) {
+  const defaultGrade = { grade: 'N/A' };
+
+  if (students instanceof Array) {
+    return students
+      .filter((student) => student.location === city)
+      .map((student) => ({
+        id: student.id,
+        firstName: student.firstName,
+        location: student.location,
+        grade: (newGrades
+          .filter((grade) => grade.studentId === student.id)
+          .pop() || defaultGrade).grade,
+      }));
+  }
+  return [];
 }
